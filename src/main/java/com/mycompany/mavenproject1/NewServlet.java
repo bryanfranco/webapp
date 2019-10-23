@@ -42,6 +42,8 @@ public class NewServlet extends HttpServlet {
             throws ServletException, IOException, DAOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+            DataSource myDataSource = DataSourceFactory.getDataSource();
+            subDAO d = new subDAO(myDataSource);
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -50,6 +52,7 @@ public class NewServlet extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet NewServlet at " + request.getContextPath() + "</h1>");
+
             out.printf("<table>");
             out.println("<tr>");
             out.println("<th> ID </th>");
@@ -57,16 +60,15 @@ public class NewServlet extends HttpServlet {
             out.println("<th> Adress </th>");
             out.println("</tr>");
             try{
-                DataSource myDataSource = DataSourceFactory.getDataSource();
-                DAO d = new DAO(myDataSource);
-                List<CustomerEntity> cus = d.customersInState("FL");
+                String val = request.getParameter("etats");
+                List<CustomerEntity> cus = d.customersInState(val);
                 Iterator it = cus.iterator();
                 while(it.hasNext()){
                     CustomerEntity custom = (CustomerEntity) it.next();
                     out.println("<tr>");
                     out.printf("<th> %d </th>", custom.getCustomerId());
                     out.printf("<th> %s </th>", custom.getName());
-                    out.printf("<th> % </th>", custom.getAddressLine1());
+                    out.printf("<th> %s </th>", custom.getAddressLine1());
                     out.println("</tr>");
                     
                 }
